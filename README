@@ -1,0 +1,68 @@
+*******************************************************************************
+***                                                                         ***
+***  Descripción de materiales entregados para la Práctica Final ISI 17-18  ***
+***                                                                         ***
+*******************************************************************************
+
+** resources/ 
+
+   El directorio resources/ contiene el código Java y los datos que se
+   entregan como parte de esta práctica.
+
+
+** jdbc-spark-example/ 
+
+El directorio jdbc-spark-example/ contiene un pequeño programa que
+sirve para ilustrar cómo usar una base de datos SQLite desde una
+aplicación SparkJava utilizando la API JDBC (ver referencias al final
+de este fichero).
+
+Una vez compilado el programa, ejecútalo y comprueba su funcionamiento
+realizando peticiones desde un navegador:
+
+1) Subir un fichero de películas: http://localhost:4567/upload_films
+   Sube el fichero de películas y las guarda en una tabla no
+   normalizada con dos columnas (film, actor) de la base de datos
+   SQLite sample.db
+
+2) Petición de los datos de la película "White Platoon 20 (2016)":
+   http://localhost:4567/films/White%20Platoon%20(2006) Devuelve todas
+   las filas de la tabla en las que aparece el nombre de la película
+   "White Platoon (2006)". Prueba a pedir otras películas.
+
+El programa tiene estas dependencias de paquetes Maven que debes
+incluir en el fichero pom.xml de tu proyecto Maven:
+1) GroupId: com.sparkjava
+   Artifact Id: spark-core
+   Version: 2.5
+2) GroupId: org.xerial
+   Artifact Id: sqlite-jdbc
+   Version: 3.21.0
+
+
+** Documentación adicional sobre JDBC:
+   https://github.com/xerial/sqlite-jdbc
+   http://www.sqlitetutorial.net/sqlite-java/
+   https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html
+
+** Documentación adicional sobre Spark Java:
+   http://sparkjava.com/documentation#getting-started
+   http://sparkjava.com/tutorials/
+
+** Cómo hacer que Travis notifique a más usuarios cada vez que construye
+   tu proyecto:
+https://docs.travis-ci.com/user/notifications/#Configuring-email-notifications
+
+** Uso de SGBD PostgreSQL como alternativa a SQLite para aplicación en
+producción en Heroku. 
+
+  Cuando tengas desplegada en Heroku tu aplicación la base de datos
+  SQLite estará almacenada en un fichero (sample.db en el
+  ejemplo). Heroku sólo mantiene los ficheros unas horas, después de
+  las cuáles los borra, aunque la aplicación siga activa.
+
+  Por ello puede interesarte utilizar PostgreSQL en lugar de SQLite
+  como base de datos para la aplicación en producción en Heroku. En
+  caso de abordar esta posibilidad ponte en contacto con el profesor.
+
+  
