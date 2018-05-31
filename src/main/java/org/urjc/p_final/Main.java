@@ -19,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.urjc.p_final.parser;
+
 // This code is quite dirty. Use it just as a hello world example 
 // to learn how to use JDBC and SparkJava to upload a file, store 
 // it in a DB, and do a SQL SELECT query
@@ -31,7 +33,7 @@ public class Main {
     // Used to illustrate how to route requests to methods instead of
     // using lambda expressions
     public static String doSelect(Request request, Response response) {
-	return select (connection, request.params(":table"), 
+    	return select (connection, request.params(":table"), 
                                    request.params(":film"));
     }
 
@@ -80,8 +82,30 @@ public class Main {
 	}
     }
 
-    public static void main(String[] args) throws 
-	ClassNotFoundException, SQLException {
+    public static String prueba(Request request, Response response) {
+    	String name;
+    	String body;
+    	String s;
+    	System.out.println("Entro en funcion prueba");
+    	
+    	body = request.body();
+    	
+    	//Esta en plan Ñapa porque no me sale el resquest.queryParam
+    	////////////////////////////////////////////////////////////
+    	StringTokenizer tokenizer = new StringTokenizer(body, "=");
+
+	    // First token is the film name(year)
+	    String parametro = tokenizer.nextToken();
+    	name = tokenizer.nextToken();
+    	///////////////////////////////////////////////////////////////
+    	
+    	System.out.println("Body = " +  body);
+    	System.out.println("Nombre = " +  name);
+    	return "HOLA";
+    }
+   
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    parser prueba = new parser();
 	port(getHerokuAssignedPort());
 	
 	// Connect to SQLite sample.db database
@@ -106,8 +130,23 @@ public class Main {
 	    + "    <button>Upload file</button>" + "</form>");
 	// You must use the name "uploaded_films_file" in the call to
 	// getPart to retrieve the uploaded file. See next call:
+	
+	get("/",(req,res) ->
+	"Busar Actor" + 
+		"<form action='/prueba' method='post' enctype='text/plain'>" 
+		+ "    <input type='text' name='nombre'>"
+		+ "    <button>prueba</button>" + "</form>"
+		+
+		"<form action='/prueba' method='post' enctype='text/plain'>" 
+		+ "    <input type='text' name='nombre'>"
+		+ "    <button>prueba</button>" + "</form>");
+	
+	
+	
+	post("/prueba", Main::prueba);
+    
 
-
+		
 	// Retrieves the file uploaded through the /upload_films HTML form
 	// Creates table and stores uploaded file in a two-columns table
 	post("/upload", (req, res) -> {
@@ -136,7 +175,13 @@ public class Main {
 
 			    // First token is the film name(year)
 			    String film = tokenizer.nextToken();
-
+			    
+			    //Tendria que llamar a perserfilm(film) --> Saca solo la peli.
+			    String prueba2 =prueba.parserFilm(film);
+			    System.out.println("Prueba2 =" + prueba2);
+			    //llamar a parserFecha(film) -->saque la fecha
+			    String Fecha = prueba.parserFecha(film);
+			    System.out.println("Prueba2 =" + prueba2);
 			    // Now get actors and insert them
 			    while (tokenizer.hasMoreTokens()) {
 				insert(connection, film, tokenizer.nextToken());
