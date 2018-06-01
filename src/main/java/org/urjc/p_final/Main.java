@@ -132,19 +132,26 @@ public class Main {
 	// getPart to retrieve the uploaded file. See next call:
 	
 	get("/",(req,res) ->
-	"Busar Actor" + 
-		"<form action='/prueba' method='post' enctype='text/plain'>" 
-		+ "    <input type='text' name='nombre'>"
-		+ "    <button>prueba</button>" + "</form>"
+	"Buscar Pelicula" + 
+		"<form action='/buscarpelicula' method='post' enctype='text/plain'>" 
+		+ "<input type='text' name='nombre'>"
+		+ "<button>Buscar</button></form>"
 		+
 		"<form action='/prueba' method='post' enctype='text/plain'>" 
-		+ "    <input type='text' name='nombre'>"
-		+ "    <button>prueba</button>" + "</form>");
+		+ "<input type='text' name='nombre'>"
+		+ "<button>prueba</button></form>"
+		+ "<a href='/upload_films'>Subir archivo</a><br>"
+		+ "<a href='/erase'>Borrar datos</a>");
 	
 	
 	
 	post("/prueba", Main::prueba);
-    
+
+	post("/buscarpelicula", (req, res) -> {
+		String[] result = req.body().split("=");
+	    res.redirect("/films/" + result[1]);
+		return 0;
+		});
 
 		
 	// Retrieves the file uploaded through the /upload_films HTML form
@@ -181,7 +188,7 @@ public class Main {
 			    System.out.println("Prueba2 =" + prueba2);
 			    //llamar a parserFecha(film) -->saque la fecha
 			    String Fecha = prueba.parserFecha(film);
-			    System.out.println("Prueba2 =" + prueba2);
+			    System.out.println("Fecha =" + Fecha);
 			    // Now get actors and insert them
 			    while (tokenizer.hasMoreTokens()) {
 				insert(connection, film, tokenizer.nextToken());
