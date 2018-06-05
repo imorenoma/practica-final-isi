@@ -30,6 +30,22 @@ public class parser {
 		}
 	}
 
+	public static String[] parserActor(String actor){
+		String LastName, Name, Aux;
+		StringTokenizer tokenizer = new StringTokenizer(actor, ",");
+		// First token is LastName
+	    Aux = tokenizer.nextToken();
+	    if(tokenizer.hasMoreTokens()){
+	    	LastName = Aux;
+	    	Name = tokenizer.nextToken();
+	    }else{
+	    	Name = Aux;
+	    	LastName= "";
+	    }
+	    String[] Actor = {Name, LastName};
+		return Actor;
+	}
+
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -45,6 +61,12 @@ public class parser {
 		String fecha = parserFecha(s);
 		System.out.println(fecha);
 
+		//Pruebas PArser Actor:
+		String Actor = "Walker,Paul";
+		String Actor2 = "Ludacris";
+		String[] Act = parserActor(Actor2);
+		System.out.println("Name = " + Act[0] + " Apellido = " + Act[1]);
+		*/
 	}
 
 }
