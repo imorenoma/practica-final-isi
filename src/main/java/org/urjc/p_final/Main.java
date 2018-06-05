@@ -128,9 +128,10 @@ public class Main {
 	// In this case we use a Java 8 Lambda function to process the
 	// GET /upload_films HTTP request, and we return a form
 	get("/upload_films", (req, res) -> 
-	    "<form action='/upload' method='post' enctype='multipart/form-data'>" 
-	    + "    <input type='file' name='uploaded_films_file' accept='.txt'>"
-	    + "    <button>Upload file</button>" + "</form>");
+		cabecera
+	    + "<form action='/upload' method='post' enctype='multipart/form-data'>" 
+	    + "<input type='file' name='uploaded_films_file' accept='.txt'>"
+	    + "<button>Upload file</button></form></body>");
 	// You must use the name "uploaded_films_file" in the call to
 	// getPart to retrieve the uploaded file. See next call:
 	
