@@ -29,6 +29,9 @@ public class Main {
     // Connection to the SQLite database. Used by insert and select methods.
     // Initialized in main
     private static Connection connection;
+    
+    static String cabecera = "<body background='http://thewongcouple.com/our-wedding/images/CinemaBackground.jpg'>"
+			+ "<center><h1 style=\"color:#8D8A8A;\">MOVIE DB</h1>";
 
     // Used to illustrate how to route requests to methods instead of
     // using lambda expressions
@@ -132,8 +135,7 @@ public class Main {
 	// getPart to retrieve the uploaded file. See next call:
 	
 	get("/",(req,res) ->
-			"<body background='http://thewongcouple.com/our-wedding/images/CinemaBackground.jpg'>"
-			+ "<center><h1 style=\"color:#8D8A8A;\">MOVIE DB</h1> "
+			cabecera
 			+ "<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
 			+ "<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
 			+ "<form action='/buscarpelicula' method='post' enctype='text/plain'>" 
