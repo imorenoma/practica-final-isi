@@ -132,16 +132,17 @@ public class Main {
 	// getPart to retrieve the uploaded file. See next call:
 	
 	get("/",(req,res) ->
-	"Buscar Pelicula" + 
-		"<form action='/buscarpelicula' method='post' enctype='text/plain'>" 
-		+ "<input type='text' name='nombre'>"
-		+ "<button>Buscar</button></form>"
-		+
-		"<form action='/prueba' method='post' enctype='text/plain'>" 
-		+ "<input type='text' name='nombre'>"
-		+ "<button>prueba</button></form>"
-		+ "<a href='/upload_films'>Subir archivo</a><br>"
-		+ "<a href='/erase'>Borrar datos</a>");
+			"<body background='http://thewongcouple.com/our-wedding/images/CinemaBackground.jpg'>"
+			+ "<center><h1 style=\"color:#8D8A8A;\">MOVIE DB</h1> "
+			+ "<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
+			+ "<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
+			+ "<form action='/buscarpelicula' method='post' enctype='text/plain'>" 
+			+ "<input type='text' name='nombre'>"
+			+ "<button>Buscar Pelicula</button></form>"
+			+ "</center></body>"
+			+ "<form action='/prueba' method='post' enctype='text/plain'>" 
+			+ "<input type='text' name='nombre'>"
+			+ "<button>prueba</button></form>");
 	
 	
 	
@@ -168,7 +169,6 @@ public class Main {
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 			//statement.executeUpdate("drop table if exists films");	
 			//statement.executeUpdate("create table films (film string, actor string, PRIMARY KEY(film,actor))");
-
 */
 			// Read contents of input stream that holds the uploaded file
 			InputStreamReader isr = new InputStreamReader(input);
