@@ -50,4 +50,29 @@ public class AppTest{
 		String film = "2 Fast 2 Furious (2003)";
 		assertEquals(parser.parserFecha(film), "2003");
 	}
+	//Test Actores. parserActor
+  @Test (expected=NullPointerException.class)
+	public void NullActorTest() {
+		String actor = null;
+		parser.parserActor(actor);
+  }
+
+  //Actor con nombre y apellido
+  @Test
+	public void ActorFoundNameSurnameTest() {
+	  String Actor = "Walker,Paul";
+	  String[] Act = parser.parserActor(Actor);
+
+	  assertEquals(Act[0], "Paul");
+	  assertEquals(Act[1], "Walker");
+	}
+
+  //actor solo nombre
+  public void ActorFoundNameNotSurnameTest() {
+	  String Actor = "Ludacris";
+	  String[] Act = parser.parserActor(Actor);
+
+	  assertEquals(Act[0], "Ludacris");
+	  assertEquals(Act[1], "");
+	}
 }
