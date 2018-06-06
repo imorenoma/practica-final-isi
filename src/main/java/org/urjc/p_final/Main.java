@@ -42,11 +42,15 @@ public class Main {
 
     public static String erase(Request request, Response response) throws SQLException{
     	// Prepare SQL to create table
-    	Statement statement = connection.createStatement();
+		Statement statement = connection.createStatement();
     	statement.setQueryTimeout(30); // set timeout to 30 sec.
     	statement.executeUpdate("drop table if exists films");
-		statement.executeUpdate("create table films (film string, actor string, PRIMARY KEY(film,actor))");
-
+    	statement.executeUpdate("drop table if exists actors");
+		statement.executeUpdate("drop table if exists works");
+    	System.out.println("LLEGO AQUI");
+    	statement.executeUpdate("create table films (id_film INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(30), date VARCHAR(5),UNIQUE(title,date))");
+    	statement.executeUpdate("create table actors (id_act INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(30), surname VARCHAR(30),UNIQUE(name,surname))");
+    	statement.executeUpdate("create table works (id_act INTEGER, id_film INTEGER, PRIMARY KEY(id_act,id_film), FOREIGN KEY(id_act) REFERENCES actors(id_act), FOREIGN KEY(id_film) REFERENCES actors(id_film))");
     	return "Base de datos Eliminada";
     }
 	 //select Inicial
@@ -94,7 +98,7 @@ public class Main {
     	}else if(table == "actors"){
     		sql = "SELECT * FROM " + table + " WHERE name=? AND surname=?";
     	}else{
-    		sql="BBBB";
+    		sql="BBBB"; //No deberia entrar aqui nunca (salta error en el try de despues)
     	}
 
     	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -125,29 +129,29 @@ public class Main {
     }
 
     public static void insertNew(Connection conn, String table, String data1, String data2){
-    	String sql;
-    	String id_result;
-    	if (table == "films"){
-    		sql = "INSERT INTO " + table + "(title,date) VALUES(?,?)";
-    	}else if(table == "actors"){
-    		sql = "INSERT INTO " + table + "(name, surname) VALUES(?,?)";
-    	}else{
-    		System.out.println("No existe la tabla"); //No deberia entrar nunca
-    		sql = "BBBBB";
-    	}
+		String sql="";
+     	String id_result;
+     	System.out.println("Nombre de tabla = " + table);
+     	if (table == "films"){
+     		System.out.println("TABLA FILMS");
+     		sql = "INSERT INTO " + table + "(title,date) VALUES(?,?)";
+     	}else if(table == "actors"){
+     		System.out.println("TABLA ACTORS");
+     		sql = "INSERT INTO " + table + "(name, surname) VALUES(?,?)";
+     	}else if(table == "works"){
+     		System.out.println("TABLA WORKS");
+     		sql = "INSERT INTO " + table + "(id_act, id_film) VALUES(?,?)";
+     	}else{
+     		System.out.println("No existe la tabla"); //No deberia entrar nunca
+     	}
 
-    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    		pstmt.setString(1, data1);
-    		pstmt.setString(2, data2);
-    		pstmt.executeUpdate();
-    	} catch (SQLException e) {
-    	    System.out.println(e.getMessage());
-    	}
-        //BUscamos el id del elemento que acabamos de introducir
-
-    	id_result = selectNew(conn, table, data1, data2);
-    	System.out.println("Funcion insertNew Id = " + id_result);
-    	//return id_result;
+     	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+     		pstmt.setString(1, data1);
+     		pstmt.setString(2, data2);
+     		pstmt.executeUpdate();
+     	} catch (SQLException e) {
+     	    System.out.println(e.getMessage());
+     	}
     }
 
     public static String prueba(Request request, Response response) {
