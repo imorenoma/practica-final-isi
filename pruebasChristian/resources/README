@@ -1,0 +1,22 @@
+** En el directorio code/ está el código Java de:
+
+- la clase Graph.java
+- clases que utilizan la clase Graph: BaconHistogram.java,
+  IndexGraph.java, PathFinder.java, Performer.java, SmallWorld.java
+- clases de las que depende Graph.java: In.java, Queue.java, SET.java,
+  ST.java, Stack.java, StdIn.java, StdOut.java
+
+En los comentarios del código fuente de los ficheros .java encontrarás
+información útil.
+
+
+** Los ficheros de datos se encuentran en el directorio data/ En
+data/imdb-data están los ficheros con información de películas y en
+data/other-data hay ficheros referenciados en los comentarios del
+código fuente Java.
+
+
+** Documentación adicional:
+https://introcs.cs.princeton.edu/java/45graph/
+https://algs4.cs.princeton.edu/41graph/
+
