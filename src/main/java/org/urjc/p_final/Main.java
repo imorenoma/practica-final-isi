@@ -21,44 +21,66 @@ import java.io.InputStreamReader;
 
 import org.urjc.p_final.parser;
 
-// This code is quite dirty. Use it just as a hello world example
-// to learn how to use JDBC and SparkJava to upload a file, store
+// This code is quite dirty. Use it just as a hello world example 
+// to learn how to use JDBC and SparkJava to upload a file, store 
 // it in a DB, and do a SQL SELECT query
 public class Main {
-
+    
     // Connection to the SQLite database. Used by insert and select methods.
     // Initialized in main
     private static Connection connection;
-
+    public static Graph graph = new Graph();
     static String cabecera = "<body background='http://thewongcouple.com/our-wedding/images/CinemaBackground.jpg'>"
 			+ "<center><h1 style=\"color:#8D8A8A;\">MOVIE DB</h1>";
 
     // Used to illustrate how to route requests to methods instead of
     // using lambda expressions
     public static String doSelect(Request request, Response response) {
-    	return select (connection, request.params(":table"),
+    	return select (connection, request.params(":table"), 
                                    request.params(":film"));
     }
 
+  //Para utilizar la url para imprimir el numero
+    public static String printSize(Request request, Response response) {
+    	return ("Entradas de la Base de datos " + request.params(":table") + " = " + Bbdd.sizeTable (connection, request.params(":table")));
+    }
+    public static String doWrite(Request request, Response response) {
+    	return Bbdd.writeBbdd (connection, request.params(":table"));
+    }
+    
     public static String erase(Request request, Response response) throws SQLException{
     	// Prepare SQL to create table
-		Statement statement = connection.createStatement();
+    	/*
+    	Statement statement = connection.createStatement();
     	statement.setQueryTimeout(30); // set timeout to 30 sec.
-    	statement.executeUpdate("drop table if exists films");
-    	statement.executeUpdate("drop table if exists actors");
+    	statement.executeUpdate("drop table if exists films");	
+    	statement.executeUpdate("drop table if exists actors");	
 		statement.executeUpdate("drop table if exists works");
+		statement.executeUpdate("drop table if exists distances");
     	System.out.println("LLEGO AQUI");
     	statement.executeUpdate("create table films (id_film INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(30), date VARCHAR(5),UNIQUE(title,date))");
     	statement.executeUpdate("create table actors (id_act INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(30), surname VARCHAR(30),UNIQUE(name,surname))");
     	statement.executeUpdate("create table works (id_act INTEGER, id_film INTEGER, PRIMARY KEY(id_act,id_film), FOREIGN KEY(id_act) REFERENCES actors(id_act), FOREIGN KEY(id_film) REFERENCES actors(id_film))");
+    	statement.executeUpdate("create table distances (name1 VARCHAR(30), surname1 VARCHAR(30), name2 VARCHAR(30), surname2 VARCHAR(30), distance INTEGER, PRIMARY KEY(name1,surname1,name2,surname2))");
+    	*/
+    	Bbdd.eraseBBDD(connection);
     	return "Base de datos Eliminada";
     }
-	 //select Inicial
+    public static String pruebaDistancia(Request request, Response response) throws SQLException{
+    	String actr = "Diesel,Vin";
+    	String actr1 = "Walker,Paul";
+    	String dist = "5";
+    	Bbdd.insertDistances(connection, actr, actr1, dist);
+    	return "Supongo que estara guardado";
+    	
+    }
+    //Select de serie
     public static String select(Connection conn, String table, String film) {
 	String sql = "SELECT * FROM " + table + " WHERE film=?";
+	
 
 	String result = new String();
-
+	
 	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 		pstmt.setString(1, film);
 		ResultSet rs = pstmt.executeQuery();
@@ -73,11 +95,12 @@ public class Main {
 	    } catch (SQLException e) {
 	    System.out.println(e.getMessage());
 	}
-
+	
 	return result;
     }
+    
 
-    //Insert inicial
+    //Insert que venia hecho
     public static void insert(Connection conn, String film, String actor) {
 	String sql = "INSERT INTO films(film, actor) VALUES(?,?)";
 
@@ -87,71 +110,47 @@ public class Main {
 		pstmt.executeUpdate();
 	    } catch (SQLException e) {
 	    System.out.println(e.getMessage());
-	}
+	    }
     }
-
-	 public static String selectNew(Connection conn, String table, String data1, String data2){
-    	String sql;
-    	String result = null;
-    	if (table == "films"){
-    		sql = "SELECT * FROM " + table + " WHERE title=? AND date=?";
-    	}else if(table == "actors"){
-    		sql = "SELECT * FROM " + table + " WHERE name=? AND surname=?";
-    	}else{
-    		sql="BBBB"; //No deberia entrar aqui nunca (salta error en el try de despues)
+    
+    public static Graph crearGrafo(Integer opcion) {
+    	Graph grafo = null;
+    	String directory = "resources/data/imdb-data/";
+    	String fichero;
+    	switch (opcion) {
+		case 1: 
+			fichero = directory + "cast.06.txt";
+			break;
+		case 2: 
+			fichero = directory + "cast.00-06.txt";
+			break;
+		case 3: 
+			fichero = directory + "cast.G.txt";
+			break;
+		case 4: 
+			fichero = directory + "cast.PG.txt";
+			break;
+		case 5: 
+			fichero = directory + "cast.PG13.txt";
+			break;
+		case 6: 
+			fichero = directory + "cast.mpaa.txt";
+			break;
+		case 7: 
+			fichero = directory + "cast.action.txt";
+			break;
+		case 8: 
+			fichero = directory + "cast.rated.txt";
+			break;
+		case 9:
+			fichero = directory + "cast.all.txt";
+			break;
+		default: 
+			fichero = "";
+			break;
     	}
-
-    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    		pstmt.setString(1, data1);
-    		pstmt.setString(2, data2);
-    		ResultSet rs = pstmt.executeQuery();
-    		while (rs.next()) {
-    		    // read the result set
-    		    //result += "film = " + rs.getString("film") + "\n";
-    			//System.out.println("ID_Act = " + rs.getString("id"));
-    		    //System.out.println("film = "+rs.getString("film") + "\n");
-    		    if (table == "films"){
-    		    	//System.out.println("IDFilm = " + rs.getString("id_film"));
-        		    //System.out.println("film = "+rs.getString("film") + "\n");
-        		    result = rs.getString("id_film");
-    		    }else if( table =="actors"){
-    		    	//System.out.println("ID_Act = " + rs.getString("id_act"));
-        		    //System.out.println("Surname = "+rs.getString("surname") + "\n");
-        		    result = rs.getString("id_act");
-    		    }
-    		    System.out.println("ID Final = "+ result +"\n");
-    		}
-    		return result;
-    	} catch (SQLException e) {
-    	    System.out.println(e.getMessage());
-    	    return null;
-    	}
-    }
-
-    public static void insertNew(Connection conn, String table, String data1, String data2){
-		String sql="";
-     	String id_result;
-     	System.out.println("Nombre de tabla = " + table);
-     	if (table == "films"){
-     		System.out.println("TABLA FILMS");
-     		sql = "INSERT INTO " + table + "(title,date) VALUES(?,?)";
-     	}else if(table == "actors"){
-     		System.out.println("TABLA ACTORS");
-     		sql = "INSERT INTO " + table + "(name, surname) VALUES(?,?)";
-     	}else if(table == "works"){
-     		System.out.println("TABLA WORKS");
-     		sql = "INSERT INTO " + table + "(id_act, id_film) VALUES(?,?)";
-     	}else{
-     		System.out.println("No existe la tabla"); //No deberia entrar nunca
-     	}
-
-     	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-     		pstmt.setString(1, data1);
-     		pstmt.setString(2, data2);
-     		pstmt.executeUpdate();
-     	} catch (SQLException e) {
-     	    System.out.println(e.getMessage());
-     	}
+    	grafo = new Graph(fichero, "/");
+    	return grafo;
     }
 
     public static String prueba(Request request, Response response) {
@@ -159,9 +158,9 @@ public class Main {
     	String body;
     	String s;
     	System.out.println("Entro en funcion prueba");
-
+    	
     	body = request.body();
-
+    	
     	//Esta en plan Ñapa porque no me sale el resquest.queryParam
     	////////////////////////////////////////////////////////////
     	StringTokenizer tokenizer = new StringTokenizer(body, "=");
@@ -170,16 +169,16 @@ public class Main {
 	    String parametro = tokenizer.nextToken();
     	name = tokenizer.nextToken();
     	///////////////////////////////////////////////////////////////
-
+    	
     	System.out.println("Body = " +  body);
     	System.out.println("Nombre = " +  name);
     	return "HOLA";
     }
-
+   
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-    parser prueba = new parser();
+    //parser prueba = new parser();
 	port(getHerokuAssignedPort());
-
+	
 	// Connect to SQLite sample.db database
 	// connection will be reused by every query in this simplistic example
 	connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
@@ -188,36 +187,67 @@ public class Main {
 	// the method to be called when a GET /:table/:film HTTP request
 	// Main::doWork will return the result of the SQL select
 	// query. It could've been programmed using a lambda
+	
 	// expression instead, as illustrated in the next sentence.
-	get("/:table/:film", Main::doSelect);
-
+	//URLS BASES DE DATOS
+	//Prueba escribir en la pantalla las cosas de las bases de datos
+	get("/bbdd/:table", Main::doWrite); //Hay que ponerlos antes que doSelect porque sino coge la /bbdd como tabla
+	get("/num/:table", Main::printSize);
 	//prueba borrar base de datos
 	get("/erase", Main::erase);
-
+	//Prueba guardar en distancia
+	get("/pruebaDistancia", Main::pruebaDistancia);
+	//dO sELECT QUE VENIA DE SERIE
+	get("/:table/:film", Main::doSelect);
+	
+	get("/crear_grafo", (req, res) -> 
+	cabecera
+	+"<div style='color:#FFFFFF'>Elija el archivo para crear el grafo:</div>"
+	+"<form action='/crear_grafo' method='post'>"
+	+"<select name='files'>"
+	+"<option value='1'>Año 2006</option>"
+	+"<option value='2'>Desde año 2000</option>"
+	+"<option value='3'>Calificadas G por MPAA</option>"
+	+"<option value='4'>Calificadas PG por MPAA</option>"
+	+"<option value='5'>Calificadas PG-13 por MPAA</option>"
+	+"<option value='6'>Calificadas por MPAA</option>"
+	+"<option value='7'>Acción</option>"
+	+"<option value='8'>Populares</option>"
+	+"<option value='9'>Todas</option>"
+	+"</select><input type='submit' value='Crear grafo'></form></body>");
+	
+	
+	
 	// In this case we use a Java 8 Lambda function to process the
 	// GET /upload_films HTTP request, and we return a form
-	get("/upload_films", (req, res) ->
+	get("/upload_films", (req, res) -> 
 		cabecera
-	    + "<form action='/upload' method='post' enctype='multipart/form-data'>"
+	    + "<form action='/upload' method='post' enctype='multipart/form-data'>" 
 	    + "<input type='file' name='uploaded_films_file' accept='.txt'>"
 	    + "<button>Upload file</button></form></body>");
 	// You must use the name "uploaded_films_file" in the call to
 	// getPart to retrieve the uploaded file. See next call:
-
+	
 	get("/",(req,res) ->
 			cabecera
 			+ "<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
 			+ "<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
-			+ "<form action='/buscarpelicula' method='post' enctype='text/plain'>"
+			+ "<form action='/buscarpelicula' method='post' enctype='text/plain'>" 
 			+ "<input type='text' name='nombre'>"
 			+ "<button>Buscar Pelicula</button></form>"
 			+ "</center></body>"
-			+ "<form action='/prueba' method='post' enctype='text/plain'>"
+			+ "<form action='/prueba' method='post' enctype='text/plain'>" 
 			+ "<input type='text' name='nombre'>"
 			+ "<button>prueba</button></form>");
+	
+	post("/crear_grafo", (req, res) -> {
+		Integer opcion = Integer.parseInt(req.body().split("=")[1]);
+		graph = crearGrafo(opcion);
+		System.out.println(graph);
 
-
-
+		return 0;
+		});
+	
 	post("/prueba", Main::prueba);
 
 	post("/buscarpelicula", (req, res) -> {
@@ -226,20 +256,20 @@ public class Main {
 		return 0;
 		});
 
-
+		
 	// Retrieves the file uploaded through the /upload_films HTML form
 	// Creates table and stores uploaded file in a two-columns table
 	post("/upload", (req, res) -> {
 		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/tmp"));
 		String result = "File uploaded!";
-		try (InputStream input = req.raw().getPart("uploaded_films_file").getInputStream()) {
+		try (InputStream input = req.raw().getPart("uploaded_films_file").getInputStream()) { 
 			// getPart needs to use the same name "uploaded_films_file" used in the form
 
 			/* ESTA PARTE DE AQUI CREO QUE SE PUEDE CEPILLAR
 			// Prepare SQL to create table
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
-			//statement.executeUpdate("drop table if exists films");
+			//statement.executeUpdate("drop table if exists films");	
 			//statement.executeUpdate("create table films (film string, actor string, PRIMARY KEY(film,actor))");
 */
 			// Read contents of input stream that holds the uploaded file
@@ -254,16 +284,25 @@ public class Main {
 
 			    // First token is the film name(year)
 			    String film = tokenizer.nextToken();
-
+			    
 			    //Tendria que llamar a perserfilm(film) --> Saca solo la peli.
-			    String prueba2 =prueba.parserFilm(film);
-			    System.out.println("Prueba2 =" + prueba2);
+			    String film_name =parser.parserFilm(film);
+			    //System.out.println("Despues ParserFilm NameFilm =" + film_name);
 			    //llamar a parserFecha(film) -->saque la fecha
-			    String Fecha = prueba.parserFecha(film);
-			    System.out.println("Fecha =" + Fecha);
+			    String film_date = parser.parserFecha(film);
+			    //System.out.println("DEspuesParserFilm DateFilm =" + film_date);
 			    // Now get actors and insert them
+			    //Insertar film y que me devuelva el id_film
+			    Bbdd.insertMine(connection,"films",film_name, film_date); //Me deberia devolver el id de la peli. Deberia imprimier el Id de la peli que acabo de meter
+			    String id_Film = Bbdd.selectMine(connection, "films", film_name, film_date);
 			    while (tokenizer.hasMoreTokens()) {
-				insert(connection, film, tokenizer.nextToken());
+			    	//Me tiene que hacer el parserActor
+			    	String[] actor = parser.parserActor(tokenizer.nextToken());
+			    	Bbdd.insertMine(connection,"actors",actor[0],actor[1]);
+			    	String id_actor = Bbdd.selectMine(connection,"actors",actor[0],actor[1]);
+			    	//insertar en la tabla works
+			    	Bbdd.insertMine(connection,"works",id_actor,id_Film);
+				//insert(connection, film, tokenizer.nextToken());
 			    }
 			}
 			input.close();
