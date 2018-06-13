@@ -68,6 +68,7 @@ public class AppTest{
 	}
 
   //actor solo nombre
+/*
   public void ActorFoundNameNotSurnameTest() {
 	  String Actor = "Ludacris";
 	  String[] Act = parser.parserActor(Actor);
@@ -75,4 +76,5 @@ public class AppTest{
 	  assertEquals(Act[0], "Ludacris");
 	  assertEquals(Act[1], "");
 	}
+	*/
 }
