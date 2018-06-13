@@ -63,8 +63,10 @@ public class Main {
     	statement.executeUpdate("create table works (id_act INTEGER, id_film INTEGER, PRIMARY KEY(id_act,id_film), FOREIGN KEY(id_act) REFERENCES actors(id_act), FOREIGN KEY(id_film) REFERENCES actors(id_film))");
     	statement.executeUpdate("create table distances (name1 VARCHAR(30), surname1 VARCHAR(30), name2 VARCHAR(30), surname2 VARCHAR(30), distance INTEGER, PRIMARY KEY(name1,surname1,name2,surname2))");
     	*/
+		String result = cabecera + "<div style='color:#FFFFFF'>Base de datos Eliminada</div></body>";
+
     	Bbdd.eraseBBDD(connection);
-    	return "Base de datos Eliminada";
+    	return result;
     }
     public static String pruebaDistancia(Request request, Response response) throws SQLException{
     	String actr = "Diesel,Vin";
