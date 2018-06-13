@@ -71,7 +71,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>urjc.isi.p_final.Main</mainClass>
+              <mainClass>org.urjc.p_final.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -82,7 +82,7 @@
         <version>0.4.4</version>
         <configuration>
           <jdkVersion>1.8</jdkVersion>
-          <appName>practica-final-isi-imorenoma</appName>
+          <appName>practica-final-isi</appName>
           <processTypes>
             <!-- Tell Heroku how to launch your application -->
             <web>java -jar ./target/p_final-0.0.1-jar-with-dependencies.jar</web>
