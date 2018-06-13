@@ -173,6 +173,16 @@ public class Main {
     	System.out.println("Nombre = " +  name);
     	return "HOLA";
     }
+    
+    public static String distancia() {
+    	String s = "Bacon, Kevin";		//TODO Estos dos strings habria que obtenerlos de algun sitio,
+    	String t = "Kidman, Nicole";	// no como variables
+    	PathFinder pf = new PathFinder(graph, s);
+        for (String v : pf.pathTo(t)) {
+        	StdOut.println("   " + v);
+        	}
+        return("distance " + pf.distanceTo(t));
+    }
    
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
     	//parser prueba = new parser();
@@ -243,8 +253,8 @@ public class Main {
     	post("/crear_grafo", (req, res) -> {
     		Integer opcion = Integer.parseInt(req.body().split("=")[1]);
     		graph = crearGrafo(opcion);
-    		System.out.println(graph);
-
+    		//System.out.println(graph);
+    		System.out.println(distancia());
     		return 0;
 		});
 	
