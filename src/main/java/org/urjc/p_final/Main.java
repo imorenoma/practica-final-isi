@@ -29,7 +29,7 @@ public class Main {
     // Connection to the SQLite database. Used by insert and select methods.
     // Initialized in main
     private static Connection connection;
-    public static Graph graph = new Graph();
+    public static Graph graph;
     static String cabecera = "<body background='http://thewongcouple.com/our-wedding/images/CinemaBackground.jpg'>"
 			+"<center><h1>"
 			+"<a href='/' style='color: #8D8A8A;text-decoration: none'>MOVIE DB</h1></a></body>";
@@ -174,19 +174,17 @@ public class Main {
     	return "HOLA";
     }
     
-    public static String distancia() {
-    	String s = "Bacon, Kevin";		//TODO Estos dos strings habria que obtenerlos de algun sitio,
-    	String t = "Kidman, Nicole";	// no como variables
+    public static Integer distancia(String s, String t) {
     	PathFinder pf = new PathFinder(graph, s);
         for (String v : pf.pathTo(t)) {
         	StdOut.println("   " + v);
         	}
-        return("distance " + pf.distanceTo(t));
+        return(pf.distanceTo(t));
     }
    
     public static String vecinos() {
-    	String v = "Bacon, Kevin";	//TODO Lo mismo que en distancia, obtenerlos no como variables.
-    	//String v = "Apollo 13 (1995)";	//Funciona tanto para peliculas como para actores
+    	String v = "Bacon, Kevin";		//TODO Lo mismo que en distancia, obtenerlos no como variables.
+    	//String v = "Apollo 13 (1995)";	//Funciona tanto para peliculas como para actores.
     	String resultado = "";
     	if (graph.hasVertex(v)) {
             for (String w : graph.adjacentTo(v)) {
@@ -236,7 +234,13 @@ public class Main {
     		+"<option value='9'>Todas</option>"
     		+"</select><input type='submit' value='Crear grafo'></form></body>");
 	
-	
+    	get("/distancia_grafo", (req, res) -> 
+			cabecera
+			+"<div style='color:#FFFFFF'>Elija los actores para obtener la distancia:"
+			+"<form action='/distancia_grafo' method='post' enctype='text/plain'>" 
+			+"Actor 1: <input type='text' name='actor1'><br>"
+			+"Actor 2: <input type='text' name='actor2'><br>"
+			+"<button>Calcular distancia</button></form></div></body>");
 	
 	// In this case we use a Java 8 Lambda function to process the
 	// GET /upload_films HTTP request, and we return a form
@@ -252,6 +256,7 @@ public class Main {
 			cabecera
 			+"<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
 			+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>"
+			+"<a href='/distancia_grafo'style=\"color: #cc0000\">Distancia grafo</a><br>"
 			+"<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
 			+"<form action='/buscarpelicula' method='post' enctype='text/plain'>" 
 			+"<input type='text' name='nombre'>"
@@ -265,9 +270,32 @@ public class Main {
     		Integer opcion = Integer.parseInt(req.body().split("=")[1]);
     		graph = crearGrafo(opcion);
     		//System.out.println(graph);
-    		System.out.println(distancia());
-    		System.out.println(vecinos());
-    		return 0;
+    		//System.out.println(vecinos());
+    		
+    		String actor1 = "Bacon, Kevin";
+    		String actor2 = "Kidman, Nicole";
+    		Integer dist = distancia(actor1, actor2);
+    		System.out.println(dist);
+
+    		
+    		String respuesta = cabecera 
+    				+"<div style='color:#FFFFFF'>Grafo creado</div></body>";
+    		return respuesta;
+		});
+    	
+    	post("/distancia_grafo", (req, res) -> {
+    		//Integer opcion = Integer.parseInt(req.body().split("=")[1]);
+    		//System.out.println(distancia());
+    		String actor1 = req.body().split("\n")[0].split("=")[1];
+    		String actor2 = req.body().split("\n")[1].split("=")[1];
+    		System.out.println(actor1);
+    		System.out.println(actor2);
+    		Integer dist = distancia(actor1, actor2);
+    		String respuesta = cabecera 
+    				+"<div style='color:#FFFFFF'>La distancia entre "
+    				+ actor1 + " y " + actor2 + "es de: " + dist + "</div></body>";
+    		//System.out.println(req.body().split("=\n")[3]);
+    		return respuesta;
 		});
 	
     	post("/prueba", Main::prueba);
