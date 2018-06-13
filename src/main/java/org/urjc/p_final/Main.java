@@ -221,7 +221,7 @@ public class Main {
 	// GET /upload_films HTTP request, and we return a form
     	get("/upload_films", (req, res) -> 
     		cabecera
-    		+"<form action='/upload' method='post' enctype='multipart/form-data'>" 
+    		+"<form action='/upload' method='post' enctype='multipart/form-data' style='color: #FFFFFF'>" 
     		+"<input type='file' name='uploaded_films_file' accept='.txt'>"
     		+"<button>Upload file</button></form></body>");
 	// You must use the name "uploaded_films_file" in the call to
