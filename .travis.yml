@@ -1,5 +1,2 @@
 language: java
-deploy:
- skip-cleanup: true
- provider: heroku
- app: practica-final-isi-imorenoma
+
