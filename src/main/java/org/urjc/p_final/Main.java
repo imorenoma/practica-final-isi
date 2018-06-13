@@ -184,6 +184,17 @@ public class Main {
         return("distance " + pf.distanceTo(t));
     }
    
+    public static String vecinos() {
+    	String v = "Bacon, Kevin";	//TODO Lo mismo que en distancia, obtenerlos no como variables.
+    	//String v = "Apollo 13 (1995)";	//Funciona tanto para peliculas como para actores
+    	String resultado = "";
+    	if (graph.hasVertex(v)) {
+            for (String w : graph.adjacentTo(v)) {
+                resultado = resultado + "  " + w;
+            }
+        }
+    	return resultado;
+    }
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
     	//parser prueba = new parser();
     	port(getHerokuAssignedPort());
@@ -255,6 +266,7 @@ public class Main {
     		graph = crearGrafo(opcion);
     		//System.out.println(graph);
     		System.out.println(distancia());
+    		System.out.println(vecinos());
     		return 0;
 		});
 	
