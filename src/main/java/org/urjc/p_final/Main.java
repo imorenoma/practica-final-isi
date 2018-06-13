@@ -31,8 +31,8 @@ public class Main {
     private static Connection connection;
     public static Graph graph = new Graph();
     static String cabecera = "<body background='http://thewongcouple.com/our-wedding/images/CinemaBackground.jpg'>"
-			+ "<center><h1 style=\"color:#8D8A8A;\">MOVIE DB</h1>";
-
+			+"<center><h1>"
+			+"<a href='/' style='color: #8D8A8A;text-decoration: none'>MOVIE DB</h1></a></body>";
     // Used to illustrate how to route requests to methods instead of
     // using lambda expressions
     public static String doSelect(Request request, Response response) {
@@ -228,6 +228,7 @@ public class Main {
     	get("/",(req,res) ->
 			cabecera
 			+"<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
+			+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>"
 			+"<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
 			+"<form action='/buscarpelicula' method='post' enctype='text/plain'>" 
 			+"<input type='text' name='nombre'>"
@@ -258,7 +259,7 @@ public class Main {
     	// Creates table and stores uploaded file in a two-columns table
     	post("/upload", (req, res) -> {
     		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/tmp"));
-    		String result = "File uploaded!";
+    		String result = cabecera + "<div style='color:#FFFFFF'>File uploaded!</div></body>";
     		try (InputStream input = req.raw().getPart("uploaded_films_file").getInputStream()) { 
     			// getPart needs to use the same name "uploaded_films_file" used in the form
 
