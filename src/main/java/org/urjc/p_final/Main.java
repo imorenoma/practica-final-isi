@@ -323,10 +323,13 @@ public class Main {
 			try {
 				String pelicula = req.body().split("\n")[0].split("=")[1].trim();
 				graph.validateVertex(pelicula);
+				
 				String actores = vecinos(pelicula);
+				
 				String respuesta = cabecera
 	    				+"<div style='color:#FFFFFF'>Los actores de la película \"" + pelicula 
 	    				+"\" son:<br>" + actores + "</div></body>";
+				Bbdd.insertDataFindFilms(connection, pelicula, actores);
 	    		return respuesta;
 			}catch (IllegalArgumentException e){
    			 	return cabecera +"<div style='color:#FFFFFF'>No existe la película</div></body>";
@@ -341,7 +344,8 @@ public class Main {
 				String respuesta = cabecera
 	    				+"<div style='color:#FFFFFF'>Las películas de " + actor 
 	    				+" son:<br>" + peliculas + "</div></body>";
-	    		return respuesta;
+	    		Bbdd.insertDataFindActor(connection, actor, peliculas);
+				return respuesta;
 			}catch (IllegalArgumentException e){
    			 	return cabecera +"<div style='color:#FFFFFF'>No existe el actor</div></body>";
 			}
