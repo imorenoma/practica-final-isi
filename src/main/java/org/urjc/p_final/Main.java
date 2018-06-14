@@ -269,8 +269,8 @@ public class Main {
 
     	get("/",(req,res) ->{
 			String respuesta = cabecera
-			+"<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
-			+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>";
+					+"<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
+					+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>";
 			if (graph.E() != 0) {
 				respuesta = respuesta 
 						+"<a href='/distancia_grafo'style=\"color: #cc0000\">Distancia grafo</a><br>"
@@ -278,13 +278,13 @@ public class Main {
 						+"<a href='/actor'style=\"color: #cc0000\">Actor vecinos</a><br>";
 			}
 			respuesta = respuesta +"<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
-			+"<form action='/buscarpelicula' method='post' enctype='text/plain'>"
-			+"<input type='text' name='nombre'>"
-			+"<button>Buscar Pelicula</button></form>"
-			+"</center></body>"
-			+"<form action='/prueba' method='post' enctype='text/plain'>"
-			+"<input type='text' name='nombre'>"
-			+"<button>prueba</button></form>";
+					+"<form action='/buscarpelicula' method='post' enctype='text/plain'>"
+					+"<input type='text' name='nombre'>"
+					+"<button>Buscar Pelicula</button></form>"
+					+"</center></body>"
+					+"<form action='/prueba' method='post' enctype='text/plain'>"
+					+"<input type='text' name='nombre'>"
+					+"<button>prueba</button></form>";
 			return respuesta;
 			});
 
@@ -329,8 +329,21 @@ public class Main {
 	    				+"\" son:<br>" + actores + "</div></body>";
 	    		return respuesta;
 			}catch (IllegalArgumentException e){
-   			 	return cabecera
-   			 			+"<div style='color:#FFFFFF'>No existe la película</div></body>";
+   			 	return cabecera +"<div style='color:#FFFFFF'>No existe la película</div></body>";
+			}
+		});
+    	
+    	post("/actor", (req, res) -> {
+			try {
+				String actor = req.body().split("\n")[0].split("=")[1].trim();
+				graph.validateVertex(actor);
+				String peliculas = vecinos(actor);
+				String respuesta = cabecera
+	    				+"<div style='color:#FFFFFF'>Las películas de " + actor 
+	    				+" son:<br>" + peliculas + "</div></body>";
+	    		return respuesta;
+			}catch (IllegalArgumentException e){
+   			 	return cabecera +"<div style='color:#FFFFFF'>No existe el actor</div></body>";
 			}
 		});
     	
