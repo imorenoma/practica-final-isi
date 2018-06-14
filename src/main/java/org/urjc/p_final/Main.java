@@ -185,9 +185,7 @@ public class Main {
         return(pf.distanceTo(t));
     }
 
-    public static String vecinos() {
-    	String v = "Bacon, Kevin";		//TODO Lo mismo que en distancia, obtenerlos no como variables.
-    	//String v = "Apollo 13 (1995)";	//Funciona tanto para peliculas como para actores.
+    public static String vecinos(String v) {
     	String resultado = "";
     	if (graph.hasVertex(v)) {
             for (String w : graph.adjacentTo(v)) {
@@ -204,10 +202,6 @@ public class Main {
     	// connection will be reused by every query in this simplistic example
     	connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
     	graph = new Graph();
-    	//graph = crearGrafo(1);
-
-    	//Integer dist = distancia("Bacon, Kevin","Kidman, Nicole",graph);
-		//System.out.println("Distancia = " + dist);
     	// In this case we use a Java 8 method reference to specify
     	// the method to be called when a GET /:table/:film HTTP request
     	// Main::doWork will return the result of the SQL select
@@ -259,40 +253,36 @@ public class Main {
 	// You must use the name "uploaded_films_file" in the call to
 	// getPart to retrieve the uploaded file. See next call:
 
-    	get("/",(req,res) ->
-			cabecera
+    	get("/",(req,res) ->{
+			String respuesta = cabecera
 			+"<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
-			+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>"
-			+"<a href='/distancia_grafo'style=\"color: #cc0000\">Distancia grafo</a><br>"
-			+"<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
+			+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>";
+			if (graph.E() != 0) {
+				respuesta = respuesta 
+						+"<a href='/distancia_grafo'style=\"color: #cc0000\">Distancia grafo</a><br>"
+						+"<a href='/pelicula'style=\"color: #cc0000\">Pelicula vecinos</a><br>"
+						+"<a href='/actor'style=\"color: #cc0000\">Actor vecinos</a><br>";
+			}
+			respuesta = respuesta +"<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
 			+"<form action='/buscarpelicula' method='post' enctype='text/plain'>"
 			+"<input type='text' name='nombre'>"
 			+"<button>Buscar Pelicula</button></form>"
 			+"</center></body>"
 			+"<form action='/prueba' method='post' enctype='text/plain'>"
 			+"<input type='text' name='nombre'>"
-			+"<button>prueba</button></form>");
+			+"<button>prueba</button></form>";
+			return respuesta;
+			});
 
     	post("/crear_grafo", (req, res) -> {
     		Integer opcion = Integer.parseInt(req.body().split("=")[1]);
     		graph = crearGrafo(opcion);
-    		//System.out.println(graph);
-    		//System.out.println(vecinos());
-
-    		String actor1 = "Bacon, Kevin";
-    		String actor2 = "Kidman, Nicole";
-    		Integer dist = distancia(actor1, actor2);
-    		System.out.println(dist);
-
-
     		String respuesta = cabecera
     				+"<div style='color:#FFFFFF'>Grafo creado</div></body>";
     		return respuesta;
 		});
 
     	post("/distancia_grafo", (req, res) -> {
-    		//Integer opcion = Integer.parseInt(req.body().split("=")[1]);
-    		//System.out.println(distancia());
 			try{
     			String actor1 = req.body().split("\n")[0].split("=")[1];
         		String actor2 = req.body().split("\n")[1].split("=")[1];
@@ -305,9 +295,8 @@ public class Main {
         		String respuesta = cabecera
         				+"<div style='color:#FFFFFF'>La distancia entre "
         				+ actor1 + " y " + actor2 + " es de: " + dist + "</div></body>";
-        		//System.out.println(req.body().split("=\n")[3]);
 
-        		//Hay que meter esto en la base de datos (distances)
+        		//TODO Hay que meter esto en la base de datos (distances)
         		Bbdd.insertDistances(connection, actor1, actor2, Integer.toString(dist));
         		return respuesta; //respuesta
     		}catch (IllegalArgumentException e){
@@ -315,7 +304,7 @@ public class Main {
         				+"<div style='color:#FFFFFF'>No existe alguno de los actores que buscas</div></body>";
     		}
 		});
-
+    	
     	post("/prueba", Main::prueba);
 
     	post("/buscarpelicula", (req, res) -> {
