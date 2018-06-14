@@ -21,11 +21,12 @@ import java.io.InputStreamReader;
 
 import org.urjc.p_final.parser;
 
-// This code is quite dirty. Use it just as a hello world example 
-// to learn how to use JDBC and SparkJava to upload a file, store 
+// This code is quite dirty. Use it just as a hello world example
+// to learn how to use JDBC and SparkJava to upload a file, store
 // it in a DB, and do a SQL SELECT query
+
 public class Main {
-    
+
     // Connection to the SQLite database. Used by insert and select methods.
     // Initialized in main
     private static Connection connection;
@@ -36,7 +37,7 @@ public class Main {
     // Used to illustrate how to route requests to methods instead of
     // using lambda expressions
     public static String doSelect(Request request, Response response) {
-    	return select (connection, request.params(":table"), 
+    	return select (connection, request.params(":table"),
                                    request.params(":film"));
     }
 
@@ -47,14 +48,14 @@ public class Main {
     public static String doWrite(Request request, Response response) {
     	return Bbdd.writeBbdd (connection, request.params(":table"));
     }
-    
+
     public static String erase(Request request, Response response) throws SQLException{
     	// Prepare SQL to create table
     	/*
     	Statement statement = connection.createStatement();
     	statement.setQueryTimeout(30); // set timeout to 30 sec.
-    	statement.executeUpdate("drop table if exists films");	
-    	statement.executeUpdate("drop table if exists actors");	
+    	statement.executeUpdate("drop table if exists films");
+    	statement.executeUpdate("drop table if exists actors");
 		statement.executeUpdate("drop table if exists works");
 		statement.executeUpdate("drop table if exists distances");
     	System.out.println("LLEGO AQUI");
@@ -74,12 +75,12 @@ public class Main {
     	String dist = "5";
     	Bbdd.insertDistances(connection, actr, actr1, dist);
     	return "Supongo que estara guardado";
-    	
+
     }
     //Select de serie
     public static String select(Connection conn, String table, String film) {
     	String sql = "SELECT * FROM " + table + " WHERE film=?";
-	
+
     	String result = new String();
 
     	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -97,7 +98,7 @@ public class Main {
 	    }
     	return result;
     }
-    
+
 
     //Insert que venia hecho
     public static void insert(Connection conn, String film, String actor) {
@@ -111,40 +112,40 @@ public class Main {
 	    	System.out.println(e.getMessage());
 	    }
     }
-    
+
     public static Graph crearGrafo(Integer opcion) {
     	Graph grafo = null;
     	String directory = "resources/data/imdb-data/";
     	String fichero;
     	switch (opcion) {
-		case 1: 
+		case 1:
 			fichero = directory + "cast.06.txt";
 			break;
-		case 2: 
+		case 2:
 			fichero = directory + "cast.00-06.txt";
 			break;
-		case 3: 
+		case 3:
 			fichero = directory + "cast.G.txt";
 			break;
-		case 4: 
+		case 4:
 			fichero = directory + "cast.PG.txt";
 			break;
-		case 5: 
+		case 5:
 			fichero = directory + "cast.PG13.txt";
 			break;
-		case 6: 
+		case 6:
 			fichero = directory + "cast.mpaa.txt";
 			break;
-		case 7: 
+		case 7:
 			fichero = directory + "cast.action.txt";
 			break;
-		case 8: 
+		case 8:
 			fichero = directory + "cast.rated.txt";
 			break;
 		case 9:
 			fichero = directory + "cast.all.txt";
 			break;
-		default: 
+		default:
 			fichero = "";
 			break;
     	}
@@ -157,9 +158,9 @@ public class Main {
     	String body;
     	String s;
     	System.out.println("Entro en funcion prueba");
-    	
+
     	body = request.body();
-    	
+
     	//Esta en plan Ñapa porque no me sale el resquest.queryParam
     	////////////////////////////////////////////////////////////
     	StringTokenizer tokenizer = new StringTokenizer(body, "=");
@@ -168,20 +169,22 @@ public class Main {
 	    String parametro = tokenizer.nextToken();
     	name = tokenizer.nextToken();
     	///////////////////////////////////////////////////////////////
-    	
+
     	System.out.println("Body = " +  body);
     	System.out.println("Nombre = " +  name);
     	return "HOLA";
     }
-    
+
     public static Integer distancia(String s, String t) {
+    	System.out.println("distancia");
     	PathFinder pf = new PathFinder(graph, s);
+    	System.out.println("He hecho pathfinder");
         for (String v : pf.pathTo(t)) {
         	StdOut.println("   " + v);
         	}
         return(pf.distanceTo(t));
     }
-   
+
     public static String vecinos() {
     	String v = "Bacon, Kevin";		//TODO Lo mismo que en distancia, obtenerlos no como variables.
     	//String v = "Apollo 13 (1995)";	//Funciona tanto para peliculas como para actores.
@@ -196,16 +199,20 @@ public class Main {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
     	//parser prueba = new parser();
     	port(getHerokuAssignedPort());
-	
+
     	// Connect to SQLite sample.db database
     	// connection will be reused by every query in this simplistic example
     	connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+    	graph = new Graph();
+    	//graph = crearGrafo(1);
 
+    	//Integer dist = distancia("Bacon, Kevin","Kidman, Nicole",graph);
+		//System.out.println("Distancia = " + dist);
     	// In this case we use a Java 8 method reference to specify
     	// the method to be called when a GET /:table/:film HTTP request
     	// Main::doWork will return the result of the SQL select
     	// query. It could've been programmed using a lambda
-	
+
     	// expression instead, as illustrated in the next sentence.
     	//URLS BASES DE DATOS
     	//Prueba escribir en la pantalla las cosas de las bases de datos
@@ -217,8 +224,8 @@ public class Main {
     	get("/pruebaDistancia", Main::pruebaDistancia);
     	//dO sELECT QUE VENIA DE SERIE
     	get("/:table/:film", Main::doSelect);
-	
-    	get("/crear_grafo", (req, res) -> 
+
+    	get("/crear_grafo", (req, res) ->
     		cabecera
     		+"<div style='color:#FFFFFF'>Elija el archivo para crear el grafo:</div>"
     		+"<form action='/crear_grafo' method='post'>"
@@ -233,71 +240,74 @@ public class Main {
     		+"<option value='8'>Populares</option>"
     		+"<option value='9'>Todas</option>"
     		+"</select><input type='submit' value='Crear grafo'></form></body>");
-	
-    	get("/distancia_grafo", (req, res) -> 
+
+    	get("/distancia_grafo", (req, res) ->
 			cabecera
 			+"<div style='color:#FFFFFF'>Elija los actores para obtener la distancia:"
-			+"<form action='/distancia_grafo' method='post' enctype='text/plain'>" 
-			+"Actor 1: <input type='text' name='actor1'><br>"
+			+"<form action='/distancia_grafo' method='post' enctype='text/plain'>"
+			+"Actor 1: <input type='text' id='actor1' name='actor1'><br>"
 			+"Actor 2: <input type='text' name='actor2'><br>"
 			+"<button>Calcular distancia</button></form></div></body>");
-	
+
 	// In this case we use a Java 8 Lambda function to process the
 	// GET /upload_films HTTP request, and we return a form
-    	get("/upload_films", (req, res) -> 
+    	get("/upload_films", (req, res) ->
     		cabecera
-    		+"<form action='/upload' method='post' enctype='multipart/form-data' style='color: #FFFFFF'>" 
+    		+"<form action='/upload' method='post' enctype='multipart/form-data' style='color: #FFFFFF'>"
     		+"<input type='file' name='uploaded_films_file' accept='.txt'>"
     		+"<button>Upload file</button></form></body>");
 	// You must use the name "uploaded_films_file" in the call to
 	// getPart to retrieve the uploaded file. See next call:
-	
+
     	get("/",(req,res) ->
 			cabecera
 			+"<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
 			+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>"
 			+"<a href='/distancia_grafo'style=\"color: #cc0000\">Distancia grafo</a><br>"
 			+"<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
-			+"<form action='/buscarpelicula' method='post' enctype='text/plain'>" 
+			+"<form action='/buscarpelicula' method='post' enctype='text/plain'>"
 			+"<input type='text' name='nombre'>"
 			+"<button>Buscar Pelicula</button></form>"
 			+"</center></body>"
-			+"<form action='/prueba' method='post' enctype='text/plain'>" 
+			+"<form action='/prueba' method='post' enctype='text/plain'>"
 			+"<input type='text' name='nombre'>"
 			+"<button>prueba</button></form>");
-    
+
     	post("/crear_grafo", (req, res) -> {
     		Integer opcion = Integer.parseInt(req.body().split("=")[1]);
     		graph = crearGrafo(opcion);
     		//System.out.println(graph);
     		//System.out.println(vecinos());
-    		
+
     		String actor1 = "Bacon, Kevin";
     		String actor2 = "Kidman, Nicole";
     		Integer dist = distancia(actor1, actor2);
     		System.out.println(dist);
 
-    		
-    		String respuesta = cabecera 
+
+    		String respuesta = cabecera
     				+"<div style='color:#FFFFFF'>Grafo creado</div></body>";
     		return respuesta;
 		});
-    	
+
     	post("/distancia_grafo", (req, res) -> {
     		//Integer opcion = Integer.parseInt(req.body().split("=")[1]);
     		//System.out.println(distancia());
     		String actor1 = req.body().split("\n")[0].split("=")[1];
     		String actor2 = req.body().split("\n")[1].split("=")[1];
-    		System.out.println(actor1);
-    		System.out.println(actor2);
-    		Integer dist = distancia(actor1, actor2);
-    		String respuesta = cabecera 
+    		actor1 = actor1.substring(0,actor1.length()-1).trim();
+    		actor2 = actor2.substring(0,actor2.length()-1).trim();
+
+
+    		int dist = distancia(actor1, actor2);
+    		String respuesta = cabecera
     				+"<div style='color:#FFFFFF'>La distancia entre "
     				+ actor1 + " y " + actor2 + "es de: " + dist + "</div></body>";
     		//System.out.println(req.body().split("=\n")[3]);
-    		return respuesta;
+
+    		return respuesta; //respuesta
 		});
-	
+
     	post("/prueba", Main::prueba);
 
     	post("/buscarpelicula", (req, res) -> {
@@ -306,20 +316,20 @@ public class Main {
     		return 0;
 		});
 
-		
+
     	// Retrieves the file uploaded through the /upload_films HTML form
     	// Creates table and stores uploaded file in a two-columns table
     	post("/upload", (req, res) -> {
     		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/tmp"));
     		String result = cabecera + "<div style='color:#FFFFFF'>File uploaded!</div></body>";
-    		try (InputStream input = req.raw().getPart("uploaded_films_file").getInputStream()) { 
+    		try (InputStream input = req.raw().getPart("uploaded_films_file").getInputStream()) {
     			// getPart needs to use the same name "uploaded_films_file" used in the form
 
     			/* ESTA PARTE DE AQUI CREO QUE SE PUEDE CEPILLAR
 				// Prepare SQL to create table
 				Statement statement = connection.createStatement();
 				statement.setQueryTimeout(30); // set timeout to 30 sec.
-				//statement.executeUpdate("drop table if exists films");	
+				//statement.executeUpdate("drop table if exists films");
 				//statement.executeUpdate("create table films (film string, actor string, PRIMARY KEY(film,actor))");
 */
     			// Read contents of input stream that holds the uploaded file
@@ -328,13 +338,13 @@ public class Main {
     			String s;
     			while ((s = br.readLine()) != null) {
     				System.out.println(s);
-    				
+
     				// Tokenize the film name and then the actors, separated by "/"
     				StringTokenizer tokenizer = new StringTokenizer(s, "/");
-    				
+
     				// First token is the film name(year)
     				String film = tokenizer.nextToken();
-    				
+
     				//Tendria que llamar a perserfilm(film) --> Saca solo la peli.
     				String film_name =parser.parserFilm(film);
     				//System.out.println("Despues ParserFilm NameFilm =" + film_name);
