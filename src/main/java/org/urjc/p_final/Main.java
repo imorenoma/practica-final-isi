@@ -293,19 +293,27 @@ public class Main {
     	post("/distancia_grafo", (req, res) -> {
     		//Integer opcion = Integer.parseInt(req.body().split("=")[1]);
     		//System.out.println(distancia());
-    		String actor1 = req.body().split("\n")[0].split("=")[1];
-    		String actor2 = req.body().split("\n")[1].split("=")[1];
-    		actor1 = actor1.substring(0,actor1.length()-1).trim();
-    		actor2 = actor2.substring(0,actor2.length()-1).trim();
+			try{
+    			String actor1 = req.body().split("\n")[0].split("=")[1];
+        		String actor2 = req.body().split("\n")[1].split("=")[1];
+        		//Hago trim para quitar los espacios del principio y del final
+        		actor1 = actor1.trim();
+        		actor2 = actor2.trim();
+            	graph.validateVertex(actor1);
+            	graph.validateVertex(actor2);
+        		int dist = distancia(actor1, actor2);
+        		String respuesta = cabecera
+        				+"<div style='color:#FFFFFF'>La distancia entre "
+        				+ actor1 + " y " + actor2 + " es de: " + dist + "</div></body>";
+        		//System.out.println(req.body().split("=\n")[3]);
 
-
-    		int dist = distancia(actor1, actor2);
-    		String respuesta = cabecera
-    				+"<div style='color:#FFFFFF'>La distancia entre "
-    				+ actor1 + " y " + actor2 + "es de: " + dist + "</div></body>";
-    		//System.out.println(req.body().split("=\n")[3]);
-
-    		return respuesta; //respuesta
+        		//Hay que meter esto en la base de datos (distances)
+        		Bbdd.insertDistances(connection, actor1, actor2, Integer.toString(dist));
+        		return respuesta; //respuesta
+    		}catch (IllegalArgumentException e){
+    			 return cabecera
+        				+"<div style='color:#FFFFFF'>No existe alguno de los actores que buscas</div></body>";
+    		}
 		});
 
     	post("/prueba", Main::prueba);
