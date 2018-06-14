@@ -189,7 +189,7 @@ public class Main {
     	String resultado = "";
     	if (graph.hasVertex(v)) {
             for (String w : graph.adjacentTo(v)) {
-                resultado = resultado + "  " + w;
+                resultado = resultado + w + "<br>";
             }
         }
     	return resultado;
@@ -242,6 +242,20 @@ public class Main {
 			+"Actor 1: <input type='text' id='actor1' name='actor1'><br>"
 			+"Actor 2: <input type='text' name='actor2'><br>"
 			+"<button>Calcular distancia</button></form></div></body>");
+    	
+    	get("/pelicula", (req, res) ->
+			cabecera
+			+"<div style='color:#FFFFFF'>Elija la pelicula para obtener los vecinos:"
+			+"<form action='/pelicula' method='post' enctype='text/plain'>"
+			+"Pelicula: <input type='text' id='pelicula' name='pelicula'><br>"
+			+"<button>Buscar vecinos</button></form></div></body>");
+    	
+    	get("/actor", (req, res) ->
+			cabecera
+			+"<div style='color:#FFFFFF'>Elija el actor para obtener los vecinos:"
+			+"<form action='/actor' method='post' enctype='text/plain'>"
+			+"Actor: <input type='text' id='actor' name='actor'><br>"
+			+"<button>Buscar vecinos</button></form></div></body>");
 
 	// In this case we use a Java 8 Lambda function to process the
 	// GET /upload_films HTTP request, and we return a form
@@ -303,6 +317,21 @@ public class Main {
     			 return cabecera
         				+"<div style='color:#FFFFFF'>No existe alguno de los actores que buscas</div></body>";
     		}
+		});
+    	
+    	post("/pelicula", (req, res) -> {
+			try {
+				String pelicula = req.body().split("\n")[0].split("=")[1].trim();
+				graph.validateVertex(pelicula);
+				String actores = vecinos(pelicula);
+				String respuesta = cabecera
+	    				+"<div style='color:#FFFFFF'>Los actores de la película \"" + pelicula 
+	    				+"\" son:<br>" + actores + "</div></body>";
+	    		return respuesta;
+			}catch (IllegalArgumentException e){
+   			 	return cabecera
+   			 			+"<div style='color:#FFFFFF'>No existe la película</div></body>";
+			}
 		});
     	
     	post("/prueba", Main::prueba);
