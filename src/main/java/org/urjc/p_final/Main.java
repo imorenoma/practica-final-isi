@@ -46,37 +46,16 @@ public class Main {
     	return ("Entradas de la Base de datos " + request.params(":table") + " = " + Bbdd.sizeTable (connection, request.params(":table")));
     }
     public static String doWrite(Request request, Response response) {
-    	return Bbdd.writeBbdd (connection, request.params(":table"));
+    	return cabecera + "<div style='color:#FFFFFF'>" + Bbdd.writeBbdd (connection, request.params(":table"));
     }
 
     public static String erase(Request request, Response response) throws SQLException{
-    	// Prepare SQL to create table
-    	/*
-    	Statement statement = connection.createStatement();
-    	statement.setQueryTimeout(30); // set timeout to 30 sec.
-    	statement.executeUpdate("drop table if exists films");
-    	statement.executeUpdate("drop table if exists actors");
-		statement.executeUpdate("drop table if exists works");
-		statement.executeUpdate("drop table if exists distances");
-    	System.out.println("LLEGO AQUI");
-    	statement.executeUpdate("create table films (id_film INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(30), date VARCHAR(5),UNIQUE(title,date))");
-    	statement.executeUpdate("create table actors (id_act INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(30), surname VARCHAR(30),UNIQUE(name,surname))");
-    	statement.executeUpdate("create table works (id_act INTEGER, id_film INTEGER, PRIMARY KEY(id_act,id_film), FOREIGN KEY(id_act) REFERENCES actors(id_act), FOREIGN KEY(id_film) REFERENCES actors(id_film))");
-    	statement.executeUpdate("create table distances (name1 VARCHAR(30), surname1 VARCHAR(30), name2 VARCHAR(30), surname2 VARCHAR(30), distance INTEGER, PRIMARY KEY(name1,surname1,name2,surname2))");
-    	*/
-		String result = cabecera + "<div style='color:#FFFFFF'>Base de datos Eliminada</div></body>";
+    	String result = cabecera + "<div style='color:#FFFFFF'>Base de datos Eliminada</div></body>";
 
     	Bbdd.eraseBBDD(connection);
     	return result;
     }
-    public static String pruebaDistancia(Request request, Response response) throws SQLException{
-    	String actr = "Diesel,Vin";
-    	String actr1 = "Walker,Paul";
-    	String dist = "5";
-    	Bbdd.insertDistances(connection, actr, actr1, dist);
-    	return "Supongo que estara guardado";
 
-    }
     //Select de serie
     public static String select(Connection conn, String table, String film) {
     	String sql = "SELECT * FROM " + table + " WHERE film=?";
@@ -153,28 +132,6 @@ public class Main {
     	return grafo;
     }
 
-    public static String prueba(Request request, Response response) {
-    	String name;
-    	String body;
-    	String s;
-    	System.out.println("Entro en funcion prueba");
-
-    	body = request.body();
-
-    	//Esta en plan Ñapa porque no me sale el resquest.queryParam
-    	////////////////////////////////////////////////////////////
-    	StringTokenizer tokenizer = new StringTokenizer(body, "=");
-
-	    // First token is the film name(year)
-	    String parametro = tokenizer.nextToken();
-    	name = tokenizer.nextToken();
-    	///////////////////////////////////////////////////////////////
-
-    	System.out.println("Body = " +  body);
-    	System.out.println("Nombre = " +  name);
-    	return "HOLA";
-    }
-
     public static Integer distancia(String s, String t) {
     	System.out.println("distancia");
     	PathFinder pf = new PathFinder(graph, s);
@@ -214,8 +171,7 @@ public class Main {
     	get("/num/:table", Main::printSize);
     	//prueba borrar base de datos
     	get("/erase", Main::erase);
-    	//Prueba guardar en distancia
-    	get("/pruebaDistancia", Main::pruebaDistancia);
+    	
     	//dO sELECT QUE VENIA DE SERIE
     	get("/:table/:film", Main::doSelect);
 
@@ -257,19 +213,8 @@ public class Main {
 			+"Actor: <input type='text' id='actor' name='actor'><br>"
 			+"<button>Buscar vecinos</button></form></div></body>");
 
-	// In this case we use a Java 8 Lambda function to process the
-	// GET /upload_films HTTP request, and we return a form
-    	get("/upload_films", (req, res) ->
-    		cabecera
-    		+"<form action='/upload' method='post' enctype='multipart/form-data' style='color: #FFFFFF'>"
-    		+"<input type='file' name='uploaded_films_file' accept='.txt'>"
-    		+"<button>Upload file</button></form></body>");
-	// You must use the name "uploaded_films_file" in the call to
-	// getPart to retrieve the uploaded file. See next call:
-
-    	get("/",(req,res) ->{
+	   	get("/",(req,res) ->{
 			String respuesta = cabecera
-					+"<a href='/upload_films'style=\"color: #cc0000\">Subir archivo</a><br>"
 					+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>";
 			if (graph.E() != 0) {
 				respuesta = respuesta 
@@ -278,13 +223,11 @@ public class Main {
 						+"<a href='/actor'style=\"color: #cc0000\">Actor vecinos</a><br>";
 			}
 			respuesta = respuesta +"<a href='/erase'style=\"color: #cc0000\">Borrar datos</a><br>"
-					+"<form action='/buscarpelicula' method='post' enctype='text/plain'>"
-					+"<input type='text' name='nombre'>"
-					+"<button>Buscar Pelicula</button></form>"
-					+"</center></body>"
-					+"<form action='/prueba' method='post' enctype='text/plain'>"
-					+"<input type='text' name='nombre'>"
-					+"<button>prueba</button></form>";
+					+"<a href='/bbdd/distances'style=\"color: #cc0000\">ImprimirBBdd distancias</a><br>"
+					+"<a href='/bbdd/actors'style=\"color: #cc0000\">ImprimirBBdd Actores</a><br>"
+					+"<a href='/bbdd/films'style=\"color: #cc0000\">ImprimirBBdd Peliculas</a><br>"
+					+"</center></body>";
+		
 			return respuesta;
 			});
 
@@ -351,7 +294,6 @@ public class Main {
 			}
 		});
     	
-    	post("/prueba", Main::prueba);
 
     	post("/buscarpelicula", (req, res) -> {
     		String[] result = req.body().split("=");
