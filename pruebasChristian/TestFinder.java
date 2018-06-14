@@ -51,7 +51,7 @@ public class TestPathFinder {
   }
 
   @Test
-  public void testHappyPath () {
+  public void testHappyRightPath () {
     //finder = new PathFinder(graph, "JFK");
     assertEquals("Should be OK.", finder.pathTo("MCO").toString(), "JFK MCO "); //expected <JFK MCO[ ]>
     assertEquals("Should be OK.", finder.distanceTo("MCO"), 1);
