@@ -82,10 +82,10 @@
         <version>0.4.4</version>
         <configuration>
           <jdkVersion>1.8</jdkVersion>
-          <appName>practica-final-isi</appName>
+          <appName>p-final-isi</appName>
           <processTypes>
             <!-- Tell Heroku how to launch your application -->
-            <web>java -jar ./target/p_final-0.0.1-jar-with-dependencies.jar</web>
+            <web>java -jar ./target/p-final-isi-0.0.1-jar-with-dependencies.jar</web>
           </processTypes>
         </configuration>
 	</plugin>
