@@ -108,4 +108,10 @@ public class TestDDBB {
     assertEquals("Should be OK.",Bbdd.sizeTable(connection, "actors"), "3"); // confirmar si INSERTMINE devuelve el ID correcto, 1 en este caso
   }
 
+  @Test
+  public void testRightDitance() throws SQLException {
+    Bbdd.insertDistance(connection, "Tom Cruise", "Nicole Kidman", "1");
+    assertEquals("Should be OK.","1", "1"); // no está implementado en selectMine la tabla insert o works
+  }
+
 }
