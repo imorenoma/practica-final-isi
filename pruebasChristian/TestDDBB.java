@@ -51,7 +51,7 @@ public class TestDDBB {
     } catch(SQLException e) {
         System.err.println(e);
     }
-
+  }
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////// VER SI INSERTMINE DEVUELVE NullPointerException SI LE METEMOS UN NULL //////////
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ public class TestDDBB {
 
   @Test (expected=NullPointerException.class)
   public void testInsertNullWorks() throws SQLException {
-    Bbdd.insertMine(connection, "actors", null, 3); // id_pelicula null
+    Bbdd.insertMine(connection, "actors", null, "3"); // id_pelicula null
   }
 
   @Test
@@ -80,7 +80,7 @@ public class TestDDBB {
   @Test
   public void testRightFilm() throws SQLException {
     Bbdd.insertMine(connection, "films", "20000 Leagues Under the Sea", "(1954)");
-    assertEquals("Should be OK.",Bbdd.selectMine(connection, "films", "20000 Leagues Under the Sea", "(1954)"), 1); // confirmar si INSERTMINE devuelve el ID correcto, 1 en este caso
+    assertEquals("Should be OK.",Bbdd.selectMine(connection, "films", "20000 Leagues Under the Sea", "(1954)"), "1"); // confirmar si INSERTMINE devuelve el ID correcto, 1 en este caso
   }
 
   @Test
@@ -92,14 +92,7 @@ public class TestDDBB {
   @Test
   public void testRightActor() throws SQLException {
     Bbdd.insertMine(connection, "actors", "Tom", "Cruise");
-    assertEquals("Should be OK.",Bbdd.selectMine(connection, "actors", "Tom", "Cruise"), 1); // confirmar si INSERTMINE devuelve el ID correcto, 1 en este caso
+    assertEquals("Should be OK.",Bbdd.selectMine(connection, "actors", "Tom", "Cruise"), "1"); // confirmar si INSERTMINE devuelve el ID correcto, 1 en este caso
   }
-
-}
-
-
-
-
-
 
 }
