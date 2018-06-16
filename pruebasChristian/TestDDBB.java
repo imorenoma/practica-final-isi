@@ -95,4 +95,17 @@ public class TestDDBB {
     assertEquals("Should be OK.",Bbdd.selectMine(connection, "actors", "Tom", "Cruise"), "1"); // confirmar si INSERTMINE devuelve el ID correcto, 1 en este caso
   }
 
+  @Test
+  public void testEmptyTable() throws SQLException {
+    assertEquals("Should be OK.",Bbdd.sizeTable(connection, "actors"), "0"); // si no existe o no tiene entradas, sizeTable returns 0
+  }
+
+  @Test
+  public void testRightLengthTable() throws SQLException {
+    Bbdd.insertMine(connection, "actors", "Francis", "McDonald");
+    Bbdd.insertMine(connection, "actors", "Andrew", "Gorman");
+    Bbdd.insertMine(connection, "actors", "Eugene", "Osment");
+    assertEquals("Should be OK.",Bbdd.sizeTable(connection, "actors"), "3"); // confirmar si INSERTMINE devuelve el ID correcto, 1 en este caso
+  }
+
 }
