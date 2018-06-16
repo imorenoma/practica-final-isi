@@ -114,4 +114,12 @@ public class TestDDBB {
     assertEquals("Should be OK.","1", "1"); // no está implementado en selectMine la tabla insert o works
   }
 
+  @Test
+  public void testRightDitance() throws SQLException {
+    Bbdd.insertMine(connection, "actors", "Tom", "Cruise");
+    Bbdd.insertMine(connection, "films", "Born on the Fourth of July", "(1989)");
+    Bbdd.insertMine(connection, "works", "1", "1"); //adecuar esto para haya unificación en las tablas
+    assertEquals("Should be OK.", "1", "1"); // no está implementado en selectMine la tabla insert o works
+  }
+
 }
