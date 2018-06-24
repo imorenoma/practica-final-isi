@@ -80,7 +80,6 @@ public class Bbdd {
     	}else if(table.equals("actors")){
     		sql = "INSERT INTO " + table + "(name, surname) VALUES(?,?)";
     	}else if(table.equals("works")){
-    		System.out.println("TABLA WORKS");
     		sql = "INSERT INTO " + table + "(id_act, id_film) VALUES(?,?)";
     	}else{
     		System.out.println("No existe la tabla"); //No deberia entrar nunca
