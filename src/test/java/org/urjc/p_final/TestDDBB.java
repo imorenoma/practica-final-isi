@@ -2,6 +2,7 @@ package org.urjc.p_final;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.*;
 import java.util.*;
@@ -13,6 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 //public static String selectMine(Connection conn, String table, String data1, String data2) --> Busca un elemento en la base de datos
 //public static void insertMine(Connection conn, String table, String data1, String data2) --> Insertar en la tabla Works o Films o Actors
@@ -28,38 +32,38 @@ import java.sql.SQLException;
 
 public class TestDDBB {
 
-  private static Connection connection;
+	private static Connection connection;
 
-  @Before
+	@Before
 	public void SetUp() {
 
-    connection = null;
-    try {
-      connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
-      Bbdd.eraseBBDD(connection); // Prepare SQL to create table
-    } catch(SQLException e {
-	      System.err.println(e.getMessage());
+		connection = null;
+		try {
+			connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+			Bbdd.eraseBBDD(connection); // Prepare SQL to create table
+		} catch(SQLException e) {
+			System.err.println(e.getMessage());
 	    }
 	}
 
-  @After
-  public void tearDown() {
-    try {
-      if(connection != null){
-        connection.close();
-      }
-    } catch(SQLException e) {
-        System.err.println(e);
-    }
-  }
+	@After
+	public void tearDown() {
+		try {
+			if(connection != null){
+				connection.close();
+			}
+		} catch(SQLException e) {
+			System.err.println(e);
+		}
+	}
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////// VER SI INSERTMINE DEVUELVE NullPointerException SI LE METEMOS UN NULL //////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 
   @Test (expected=NullPointerException.class)
-	public void testInsertNullFilm() throws SQLException {
-		Bbdd.insertMine(connection, "films", "10 Things I Hate About You", null); // año null
-	}
+  public void testInsertNullFilm() throws SQLException {
+	  Bbdd.insertMine(connection, "films", "10 Things I Hate About You", null); // año null
+  }
 
   @Test (expected=NullPointerException.class)
 	public void testInsertNullActor() throws SQLException {
@@ -68,7 +72,7 @@ public class TestDDBB {
 
   @Test (expected=NullPointerException.class)
   public void testInsertNullWorks() throws SQLException {
-    Bbdd.insertMine(connection, "actors", null, "3"); // id_pelicula null
+    Bbdd.insertMine(connection, "works", null, "3"); // id_pelicula null
   }
 
   @Test
