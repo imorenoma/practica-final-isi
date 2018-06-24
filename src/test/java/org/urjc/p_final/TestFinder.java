@@ -13,7 +13,7 @@ import org.junit.Test;
 // Iterable<String> pathTo(String v) -- > return the shortest path from v to s as an Iterable
 
 
-public class TestPathFinder {
+public class TestFinder {
 
   Graph graph;
   PathFinder finder;
@@ -24,7 +24,7 @@ public class TestPathFinder {
 		finder = new PathFinder(graph, "JFK");
 	}
 
-  @Test (expected = NullPointerException.class)
+  @Test (expected = IllegalArgumentException.class)
   public void testNullString () {
     finder = new PathFinder(graph, null);
   }
