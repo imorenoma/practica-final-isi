@@ -11,7 +11,7 @@ import org.junit.Test;
 // Iterable<String> pathTo(String v) -- > return the shortest path from v to s as an Iterable
 
 
-public class TestPathFinder {
+public class TestFinder {
 
   Graph graph;
   PathFinder finder;
@@ -43,26 +43,26 @@ public class TestPathFinder {
     //finder = new PathFinder(graph, "JFK");
     assertEquals("Should be fine.", finder.pathTo("DFW").toString(), "JFK ORD DFW "); //expected <JFK ORD DFW[ ]>
   }
-
+/*
   @Test
   public void testWrongPath () {
     //finder = new PathFinder(graph, "JFK");
     assertEquals("Should be wrong.", finder.pathTo("MCO").toString(), "JFK ATL MCO ");
   }
-
+*/
   @Test
   public void testHappyRightPath () {
     //finder = new PathFinder(graph, "JFK");
     assertEquals("Should be OK.", finder.pathTo("MCO").toString(), "JFK MCO "); //expected <JFK MCO[ ]>
     assertEquals("Should be OK.", finder.distanceTo("MCO"), 1);
   }
-
+/*
   @Test
   public void testHappyWrongPath () {
     //finder = new PathFinder(graph, "JFK");
     assertEquals("Should be KO.", finder.pathTo("MCO").toString(), "JFK ATL MCO ");
     assertEquals("Should be KO.", finder.distanceTo("MCO"), 2);
   }
-
+*/
 
 }
