@@ -110,7 +110,7 @@ public class TestDDBB {
 
   @Test
   public void testRightDitance() throws SQLException {
-    Bbdd.insertDistance(connection, "Tom Cruise", "Nicole Kidman", "1");
+    Bbdd.insertDistances(connection, "Tom Cruise", "Nicole Kidman", "1");
     assertEquals("Should be OK.","1", "1"); // no está implementado en selectMine la tabla insert o works
   }
 
