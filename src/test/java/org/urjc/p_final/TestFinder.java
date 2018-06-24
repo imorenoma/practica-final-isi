@@ -64,7 +64,6 @@ public class TestPathFinder {
     //finder = new PathFinder(graph, "JFK");
     assertThat("Should be KO.", finder.pathTo("MCO").toString(), not("JFK ATL MCO "));
     assertThat("Should be KO.", finder.distanceTo("MCO"), not(2));
-    assertEquals("Should be KO.", finder.distanceTo("MCO"), 2);
   }
 
 
