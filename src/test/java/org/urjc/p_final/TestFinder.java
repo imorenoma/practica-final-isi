@@ -1,8 +1,10 @@
 package org.urjc.p_final;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 import org.junit.Before;
 import org.junit.Test;
+
 
 // METODOS PATHFINDER
 
@@ -47,7 +49,7 @@ public class TestPathFinder {
   @Test
   public void testWrongPath () {
     //finder = new PathFinder(graph, "JFK");
-    assertEquals("Should be wrong.", finder.pathTo("MCO").toString(), "JFK ATL MCO ");
+    assertThat("Should be KO.", finder.pathTo("MCO").toString(), not("JFK ATL MCO "));
   }
 
   @Test
@@ -60,7 +62,8 @@ public class TestPathFinder {
   @Test
   public void testHappyWrongPath () {
     //finder = new PathFinder(graph, "JFK");
-    assertEquals("Should be KO.", finder.pathTo("MCO").toString(), "JFK ATL MCO ");
+    assertThat("Should be KO.", finder.pathTo("MCO").toString(), not("JFK ATL MCO "));
+    assertThat("Should be KO.", finder.distanceTo("MCO"), not(2));
     assertEquals("Should be KO.", finder.distanceTo("MCO"), 2);
   }
 
