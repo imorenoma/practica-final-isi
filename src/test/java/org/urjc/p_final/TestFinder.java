@@ -20,7 +20,7 @@ public class TestFinder {
 
   @Before
 	public void setUp() {
-		graph = new Graph("routes.txt", " ");
+		graph = new Graph("resources/data/other-data/routes.txt", " ");
 		finder = new PathFinder(graph, "JFK");
 	}
 
