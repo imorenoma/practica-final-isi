@@ -34,17 +34,21 @@ public class Main {
     static String cabecera = "<body background='http://thewongcouple.com/our-wedding/images/CinemaBackground.jpg'>"
 			+"<center><h1>"
 			+"<a href='/' style='color: #8D8A8A;text-decoration: none'>MOVIE DB</h1></a></body>";
-    // Used to illustrate how to route requests to methods instead of
+/////////////////////////////////////////////////////////////////////////
+/*
+	 // Used to illustrate how to route requests to methods instead of
     // using lambda expressions
     public static String doSelect(Request request, Response response) {
     	return select (connection, request.params(":table"),
                                    request.params(":film"));
     }
-
+///////////////////////////////////////////////////////////////////////////////////
+*/
   //Para utilizar la url para imprimir el numero
     public static String printSize(Request request, Response response) {
     	return ("Entradas de la Base de datos " + request.params(":table") + " = " + Bbdd.sizeTable (connection, request.params(":table")));
     }
+
     public static String doWrite(Request request, Response response) {
     	return cabecera + "<div style='color:#FFFFFF'>" + Bbdd.writeBbdd (connection, request.params(":table"));
     }
@@ -56,6 +60,8 @@ public class Main {
     	return result;
     }
 
+//////////////////////////////////////////////////////////////////////////////////////
+/*
     //Select de serie
     public static String select(Connection conn, String table, String film) {
     	String sql = "SELECT * FROM " + table + " WHERE film=?";
@@ -91,6 +97,8 @@ public class Main {
 	    	System.out.println(e.getMessage());
 	    }
     }
+*/
+///////////////////////////////////////////////////////////////////////////////
 
     public static Graph crearGrafo(Integer opcion) {
     	Graph grafo = null;
@@ -168,13 +176,13 @@ public class Main {
     	//URLS BASES DE DATOS
     	//Prueba escribir en la pantalla las cosas de las bases de datos
     	get("/bbdd/:table", Main::doWrite); //Hay que ponerlos antes que doSelect porque sino coge la /bbdd como tabla
-    	get("/num/:table", Main::printSize);
+//    	get("/num/:table", Main::printSize);
     	//prueba borrar base de datos
     	get("/erase", Main::erase);
-    	
+   / /*
     	//dO sELECT QUE VENIA DE SERIE
     	get("/:table/:film", Main::doSelect);
-
+*/
     	get("/crear_grafo", (req, res) ->
     		cabecera
     		+"<div style='color:#FFFFFF'>Elija el archivo para crear el grafo:</div>"
@@ -198,14 +206,14 @@ public class Main {
 			+"Actor 1: <input type='text' id='actor1' name='actor1'><br>"
 			+"Actor 2: <input type='text' name='actor2'><br>"
 			+"<button>Calcular distancia</button></form></div></body>");
-    	
+
     	get("/pelicula", (req, res) ->
 			cabecera
 			+"<div style='color:#FFFFFF'>Elija la pelicula para obtener los vecinos:"
 			+"<form action='/pelicula' method='post' enctype='text/plain'>"
 			+"Pelicula: <input type='text' id='pelicula' name='pelicula'><br>"
 			+"<button>Buscar vecinos</button></form></div></body>");
-    	
+
     	get("/actor", (req, res) ->
 			cabecera
 			+"<div style='color:#FFFFFF'>Elija el actor para obtener los vecinos:"
@@ -217,7 +225,7 @@ public class Main {
 			String respuesta = cabecera
 					+"<a href='/crear_grafo'style=\"color: #cc0000\">Crear grafo</a><br>";
 			if (graph.E() != 0) {
-				respuesta = respuesta 
+				respuesta = respuesta
 						+"<a href='/distancia_grafo'style=\"color: #cc0000\">Distancia grafo</a><br>"
 						+"<a href='/pelicula'style=\"color: #cc0000\">Pelicula vecinos</a><br>"
 						+"<a href='/actor'style=\"color: #cc0000\">Actor vecinos</a><br>";
@@ -227,7 +235,7 @@ public class Main {
 					+"<a href='/bbdd/actors'style=\"color: #cc0000\">ImprimirBBdd Actores</a><br>"
 					+"<a href='/bbdd/films'style=\"color: #cc0000\">ImprimirBBdd Peliculas</a><br>"
 					+"</center></body>";
-		
+
 			return respuesta;
 			});
 
@@ -261,16 +269,16 @@ public class Main {
         				+"<div style='color:#FFFFFF'>No existe alguno de los actores que buscas</div></body>";
     		}
 		});
-    	
+
     	post("/pelicula", (req, res) -> {
 			try {
 				String pelicula = req.body().split("\n")[0].split("=")[1].trim();
 				graph.validateVertex(pelicula);
-				
+
 				String actores = vecinos(pelicula);
-				
+
 				String respuesta = cabecera
-	    				+"<div style='color:#FFFFFF'>Los actores de la película \"" + pelicula 
+	    				+"<div style='color:#FFFFFF'>Los actores de la película \"" + pelicula
 	    				+"\" son:<br>" + actores + "</div></body>";
 				Bbdd.insertDataFindFilms(connection, pelicula, actores);
 	    		return respuesta;
@@ -278,14 +286,14 @@ public class Main {
    			 	return cabecera +"<div style='color:#FFFFFF'>No existe la película</div></body>";
 			}
 		});
-    	
+
     	post("/actor", (req, res) -> {
 			try {
 				String actor = req.body().split("\n")[0].split("=")[1].trim();
 				graph.validateVertex(actor);
 				String peliculas = vecinos(actor);
 				String respuesta = cabecera
-	    				+"<div style='color:#FFFFFF'>Las películas de " + actor 
+	    				+"<div style='color:#FFFFFF'>Las películas de " + actor
 	    				+" son:<br>" + peliculas + "</div></body>";
 	    		Bbdd.insertDataFindActor(connection, actor, peliculas);
 				return respuesta;
@@ -293,7 +301,7 @@ public class Main {
    			 	return cabecera +"<div style='color:#FFFFFF'>No existe el actor</div></body>";
 			}
 		});
-    	
+
 
     	post("/buscarpelicula", (req, res) -> {
     		String[] result = req.body().split("=");
@@ -310,13 +318,6 @@ public class Main {
     		try (InputStream input = req.raw().getPart("uploaded_films_file").getInputStream()) {
     			// getPart needs to use the same name "uploaded_films_file" used in the form
 
-    			/* ESTA PARTE DE AQUI CREO QUE SE PUEDE CEPILLAR
-				// Prepare SQL to create table
-				Statement statement = connection.createStatement();
-				statement.setQueryTimeout(30); // set timeout to 30 sec.
-				//statement.executeUpdate("drop table if exists films");
-				//statement.executeUpdate("create table films (film string, actor string, PRIMARY KEY(film,actor))");
-*/
     			// Read contents of input stream that holds the uploaded file
     			InputStreamReader isr = new InputStreamReader(input);
     			BufferedReader br = new BufferedReader(isr);
@@ -329,16 +330,13 @@ public class Main {
 
     				// First token is the film name(year)
     				String film = tokenizer.nextToken();
-
     				//Tendria que llamar a perserfilm(film) --> Saca solo la peli.
     				String film_name =parser.parserFilm(film);
-    				//System.out.println("Despues ParserFilm NameFilm =" + film_name);
     				//llamar a parserFecha(film) -->saque la fecha
     				String film_date = parser.parserFecha(film);
-    				//System.out.println("DEspuesParserFilm DateFilm =" + film_date);
     				// Now get actors and insert them
     				//Insertar film y que me devuelva el id_film
-    				Bbdd.insertMine(connection,"films",film_name, film_date); //Me deberia devolver el id de la peli. Deberia imprimier el Id de la peli que acabo de meter
+    				Bbdd.insertMine(connection,"films",film_name, film_date);
     				String id_Film = Bbdd.selectMine(connection, "films", film_name, film_date);
     				while (tokenizer.hasMoreTokens()) {
     					//Me tiene que hacer el parserActor
@@ -347,7 +345,6 @@ public class Main {
     					String id_actor = Bbdd.selectMine(connection,"actors",actor[0],actor[1]);
     					//insertar en la tabla works
     					Bbdd.insertMine(connection,"works",id_actor,id_Film);
-    					//insert(connection, film, tokenizer.nextToken());
     				}
     			}
     			input.close();
