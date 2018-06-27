@@ -34,20 +34,7 @@ public class Main {
     static String cabecera = "<body background='http://thewongcouple.com/our-wedding/images/CinemaBackground.jpg'>"
 			+"<center><h1>"
 			+"<a href='/' style='color: #8D8A8A;text-decoration: none'>MOVIE DB</h1></a></body>";
-/////////////////////////////////////////////////////////////////////////
-/*
-	 // Used to illustrate how to route requests to methods instead of
-    // using lambda expressions
-    public static String doSelect(Request request, Response response) {
-    	return select (connection, request.params(":table"),
-                                   request.params(":film"));
-    }
-///////////////////////////////////////////////////////////////////////////////////
-*/
-  //Para utilizar la url para imprimir el numero
-    public static String printSize(Request request, Response response) {
-    	return ("Entradas de la Base de datos " + request.params(":table") + " = " + Bbdd.sizeTable (connection, request.params(":table")));
-    }
+
 
     public static String doWrite(Request request, Response response) {
     	return cabecera + "<div style='color:#FFFFFF'>" + Bbdd.writeBbdd (connection, request.params(":table"));
@@ -59,46 +46,6 @@ public class Main {
     	Bbdd.eraseBBDD(connection);
     	return result;
     }
-
-//////////////////////////////////////////////////////////////////////////////////////
-/*
-    //Select de serie
-    public static String select(Connection conn, String table, String film) {
-    	String sql = "SELECT * FROM " + table + " WHERE film=?";
-
-    	String result = new String();
-
-    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    		pstmt.setString(1, film);
-    		ResultSet rs = pstmt.executeQuery();
-    		while (rs.next()) {
-    			// read the result set
-    			//result += "film = " + rs.getString("film") + "\n";
-    			System.out.println("film = "+rs.getString("film") + "\n");
-    			result += rs.getString("actor") + "<br>";
-    			System.out.println("actor = "+rs.getString("actor")+"\n");
-    		}
-	    } catch (SQLException e) {
-	    	System.out.println(e.getMessage());
-	    }
-    	return result;
-    }
-
-
-    //Insert que venia hecho
-    public static void insert(Connection conn, String film, String actor) {
-    	String sql = "INSERT INTO films(film, actor) VALUES(?,?)";
-
-    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    		pstmt.setString(1, film);
-    		pstmt.setString(2, actor);
-    		pstmt.executeUpdate();
-	    } catch (SQLException e) {
-	    	System.out.println(e.getMessage());
-	    }
-    }
-*/
-///////////////////////////////////////////////////////////////////////////////
 
     public static Graph crearGrafo(Integer opcion) {
     	Graph grafo = null;
@@ -173,16 +120,11 @@ public class Main {
     	// query. It could've been programmed using a lambda
 
     	// expression instead, as illustrated in the next sentence.
-    	//URLS BASES DE DATOS
-    	//Prueba escribir en la pantalla las cosas de las bases de datos
+    	//Escribir en la pantalla las cosas de las bases de datos
     	get("/bbdd/:table", Main::doWrite); //Hay que ponerlos antes que doSelect porque sino coge la /bbdd como tabla
-//    	get("/num/:table", Main::printSize);
-    	//prueba borrar base de datos
+    	//borrar base de datos
     	get("/erase", Main::erase);
-    /*
-    	//dO sELECT QUE VENIA DE SERIE
-    	get("/:table/:film", Main::doSelect);
-*/
+
     	get("/crear_grafo", (req, res) ->
     		cabecera
     		+"<div style='color:#FFFFFF'>Elija el archivo para crear el grafo:</div>"
@@ -301,14 +243,6 @@ public class Main {
    			 	return cabecera +"<div style='color:#FFFFFF'>No existe el actor</div></body>";
 			}
 		});
-
-
-    	post("/buscarpelicula", (req, res) -> {
-    		String[] result = req.body().split("=");
-    		res.redirect("/films/" + result[1]);
-    		return 0;
-		});
-
 
     	// Retrieves the file uploaded through the /upload_films HTML form
     	// Creates table and stores uploaded file in a two-columns table
