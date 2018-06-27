@@ -179,7 +179,7 @@ public class Main {
 //    	get("/num/:table", Main::printSize);
     	//prueba borrar base de datos
     	get("/erase", Main::erase);
-   / /*
+    /*
     	//dO sELECT QUE VENIA DE SERIE
     	get("/:table/:film", Main::doSelect);
 */
